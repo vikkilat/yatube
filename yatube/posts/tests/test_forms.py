@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Group, Post
+from ..models import Comment, Group, Post
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -87,7 +87,7 @@ class PostFormTests(TestCase):
         self.assertTrue(Post.objects.filter(
             text=self.post.text,
             group=self.group.id,
-            image='posts/small.gif'
+            image=self.post.image
         ).exists())
 
     def test_post_edit(self):
@@ -110,3 +110,25 @@ class PostFormTests(TestCase):
             author=self.user,
             id=self.post.id,
         ).exists())
+
+    def test_comment_correct_context(self):
+        """Добавление комментария авторизованным пользователем
+        создает запись в Post."""
+        comments_count = Comment.objects.count()
+        form_data = {
+            'text': 'Тестовый коммент'
+        }
+        response = self.authorized_client.post(
+            reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
+            data=form_data,
+            follow=True,
+        )
+        comments = Comment.objects.first()
+        self.assertEqual(comments.text, form_data['text'])
+        self.assertEqual(comments.author, self.user)
+        self.assertEqual(comments.post, self.post)
+        self.assertEqual(Comment.objects.count(), comments_count + 1)
+        self.assertRedirects(
+            response, reverse(
+                'posts:post_detail', kwargs={'post_id': self.post.id})
+        )

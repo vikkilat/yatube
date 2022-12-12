@@ -3,14 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CommentForm, PostForm
-from .models import Group, Follow, Post, User
+from .models import Follow, Group, Post, User
 from .utils import paginator_func
 
 User = get_user_model()
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('group')
     page_obj = paginator_func(posts, request)
     context = {
         'page_obj': page_obj,
