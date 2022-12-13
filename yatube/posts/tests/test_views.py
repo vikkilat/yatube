@@ -83,7 +83,6 @@ class PostPagesTests(TestCase):
         self.assertEqual(post_context.author, self.post.author)
         self.assertEqual(post_context.group, self.group)
         self.assertEqual(post_context.text, self.post.text)
-        self.assertEqual(post_context.image, self.post.image)
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
@@ -115,10 +114,7 @@ class PostPagesTests(TestCase):
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id})
         )
-        self.assertEqual(response.context.get('post').text, self.post.text)
-        self.assertEqual(response.context.get('post').author, self.post.author)
-        self.assertEqual(response.context.get('post').group, self.post.group)
-        self.assertEqual(response.context.get('post').image, self.post.image)
+        self.check_context(response.context['post'])
 
     def test_post_create_page_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""

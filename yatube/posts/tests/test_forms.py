@@ -76,6 +76,7 @@ class PostFormTests(TestCase):
             'group': self.group.id,
             'image': uploaded,
         }
+        self.image = 'posts/small.gif'
         response = self.authorized_client.post(
             reverse('posts:post_create'), data=form_data, follow=True
         )
@@ -87,7 +88,7 @@ class PostFormTests(TestCase):
         self.assertTrue(Post.objects.filter(
             text=self.post.text,
             group=self.group.id,
-            image=self.post.image
+            image=self.image
         ).exists())
 
     def test_post_edit(self):
@@ -123,7 +124,7 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        comments = Comment.objects.first()
+        comments = Comment.objects.filter(text='Тестовый коммент').get()
         self.assertEqual(comments.text, form_data['text'])
         self.assertEqual(comments.author, self.user)
         self.assertEqual(comments.post, self.post)
