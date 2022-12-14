@@ -124,7 +124,7 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        comments = Comment.objects.filter(text='Тестовый коммент').get()
+        comments = Comment.objects.filter(text=form_data['text']).last()
         self.assertEqual(comments.text, form_data['text'])
         self.assertEqual(comments.author, self.user)
         self.assertEqual(comments.post, self.post)
