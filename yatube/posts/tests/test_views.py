@@ -83,7 +83,7 @@ class PostPagesTests(TestCase):
         self.image = 'posts/small.gif'
         self.assertEqual(post_context.author, self.post.author)
         self.assertEqual(post_context.group, self.group)
-        self.assertEqual(post_context.text, self.post.text)
+        self.assertEqual(post_context.text.id, self.post.text.id)
         self.assertEqual(self.image, self.post.image.name)
 
     def test_index_page_show_correct_context(self):
