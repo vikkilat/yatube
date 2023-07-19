@@ -100,3 +100,5 @@ python manage.py runserver
 ```
 python manage.py test
 ```
+## Автор:
+[Латышева Виктория](https://github.com/vikkilat)
